@@ -53,9 +53,6 @@ terraform init
 terraform apply
 ```
 - you will see the output like below when infra setup is completed.
-```ruby
-xxx
-```
 ![terraform_output](images/10_terraform_output.png)
 2. Start SSM session and do SSM port forwarding via AWS CLI
 ```ruby
@@ -101,7 +98,7 @@ Note: remember to turn SSL on.
 - Check the CloudWatach logs
 ![task_monitoring](images/11_task_monitoring.png)
 
-![cloudwatchlogs](images/12_cloudwatchlogs.png)
+- view the logs![cloudwatchlogs](images/12_cloudwatchlogs.png)
 
 6. Go to S3 and check if the data is successfully replicated.
 ```ruby
@@ -142,16 +139,16 @@ df.sort_values(ascending=True, by = ['dms_ts'])
 ---
 ## Clean up
 
-**option 1: destroy all resources except for the s3 bucket**
-```ruby
-terraform state rm aws_s3_bucket.dms
-terraform destroy
-```
-
-**option 2: destroy all resources**
+**option 1: destroy all resources**
 1. go to the s3 bucket and manually delete all objects inside
 2. terraform destroy
 ```ruby
+terraform destroy
+```
+
+**option 2: destroy all resources except for the s3 bucket**
+```ruby
+terraform state rm aws_s3_bucket.dms
 terraform destroy
 ```
 
@@ -177,8 +174,7 @@ This means **downstream processing** is required to:
 - reconstruct the latest table state
 - handle deduplication and ordering
 
-> Note: When using AWS DMS with database targets (e.g., RDS), CDC changes can be applied directly as inserts, updates, and deletes.  
-> The append-only behavior discussed here specifically applies when using S3 as the target.
+> Note: When using AWS DMS with database targets (e.g., RDS), CDC changes can be applied directly as inserts, updates, and deletes.  The append-only behavior discussed here specifically applies when using S3 as the target.
 
 ### Using Airbyte
 
@@ -233,20 +229,20 @@ In short, DMS provides flexible building blocks, while Airbyte offers a more com
 ---
 ## References
 
-- AWS Terraform script sample for deploying DMS
+- AWS Terraform script sample for deploying DMS: 
   https://github.com/aws-samples/aws-dms-terraform
 
-- Terraform doc for DMS
+- Terraform doc for DMS: 
   https://registry.terraform.io/providers/-/aws/latest/docs/resources/dms_s3_endpoint
 
-- Medium article on DMS
+- Medium article on DMS: 
   https://medium.com/@alxsbn/mysql-to-s3-with-aws-dms-what-actually-works-in-production-96cd06f39301
 
-- DMS tasks
+- DMS tasks: 
   https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Task.CDC.html
 
-- SSM connect to private instance
+- SSM connect to private instance: 
   https://medium.com/@dipandergoyal/aws-ssm-connect-private-rds-instance-from-personal-computer-4a8e0c118094
 
-- Apply record level changes from relational databases to Amazon S3 data lake using Apache Hudi on Amazon EMR and AWS Database Migration Service
+- Apply record level changes from relational databases to Amazon S3 data lake using Apache Hudi on Amazon EMR and AWS Database Migration Service: 
   https://aws.amazon.com/blogs/big-data/apply-record-level-changes-from-relational-databases-to-amazon-s3-data-lake-using-apache-hudi-on-amazon-emr-and-aws-database-migration-service/
