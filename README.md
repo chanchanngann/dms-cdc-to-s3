@@ -1,4 +1,4 @@
-# CDC Pipeline using AWS DMS
+# CDC Pipeline from Postgres → S3 using AWS DMS (Private Subnets)
 
 ## Intro
 
