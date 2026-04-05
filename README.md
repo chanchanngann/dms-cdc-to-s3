@@ -1,6 +1,6 @@
 # CDC Pipeline using AWS DMS
 
-# Intro
+## Intro
 
 In modern data platforms, Change Data Capture (CDC) is a common pattern for keeping analytical systems in sync with transactional databases.
 In my previous exercise project ( https://github.com/chanchanngann/airbyte-on-eks), I built a CDC pipeline using Airbyte on EKS. Airbyte provides an end-to-end solution with support of Iceberg. 
@@ -15,7 +15,7 @@ Finally, I do a **comparison between DMS and Airbyte**, focusing on:
 - data output format
 - downstream processing requirements
 
-# Architecture
+## Architecture
 
 ![architecture](images/01_architecture.png)
 
@@ -35,7 +35,7 @@ loading mode: Full load (initial) + CDC (continuous replication)
 ```
 
 ---
-# Pre-requisites
+## Pre-requisites
 
 1. AWS CLI installed (IAM user able to connect to AWS with necessary permissions)
 2. Terraform installed
@@ -44,7 +44,7 @@ loading mode: Full load (initial) + CDC (continuous replication)
 brew install --cask session-manager-plugin
 ```
 
-# Setup Steps
+## Setup Steps
 
 1. Deploy the infrastructure using terraform
 ```ruby
@@ -108,7 +108,7 @@ Note: remember to turn SSL on.
 s3://<dms_output_bucket>/public/test_dms123/
 ```
 
-# Test CDC flow
+## Test CDC flow
 
 - To test CDC flow, we perform DML queries in source DB (insert/update/delete). The DMS task continuously reads changes from the source database transaction logs (e.g., WAL in PostgreSQL) and replicates them to S3. We can inspect the data in S3 accordingly.
 	- Example DML query: [sql/1_cdc_test.sql](sql/1_cdc_test.sql) 
@@ -119,7 +119,7 @@ s3://<dms_output_bucket>/public/test_dms123/
 - Each CDC event is written as a separate file with a replication timestamp, potentially creating many small files, which can impact downstream processing performance and may require compaction strategies.
 ![s3_cdc_data](images/08_s3_cdc_data.png)
 
-# Key Observations
+## Key Observations
 
 - DMS outputs CDC data as **append-only** records when using S3 target  
 - Each change is represented using operation codes (I/U/D)  
@@ -140,7 +140,7 @@ df.sort_values(ascending=True, by = ['dms_ts'])
 	- handle duplicates and late-arriving events
 
 ---
-# Clean up
+## Clean up
 
 **option 1: destroy all resources except for the s3 bucket**
 ```ruby
@@ -156,7 +156,7 @@ terraform destroy
 ```
 
 ---
-# So, DMS or Airbyte for CDC pipeline?
+## So, DMS or Airbyte for CDC pipeline?
 
 It depends on whether you want a tool that only moves data, or one that also manages how the data is stored and updated. Let’s compare them.
 ### Using AWS Database Migration Service
@@ -212,7 +212,7 @@ The fundamental difference is:
 | S3 data behavior     | Append-only (when using S3 as target)    | CDC merged into Iceberg table    |
 | Best use case        | Data ingestion / migration pipelines     | End-to-end CDC → analytics table |
 
-# Conclusion
+## Conclusion
 
 In this exercise, I demonstrated how to use AWS Database Migration Service to replicate data from a PostgreSQL source into Amazon S3 with continuous CDC ingestion.
 
@@ -224,14 +224,14 @@ On the other hand, DMS is a strong choice when you need a simple, reliable inges
 
 In short, DMS provides flexible building blocks, while Airbyte offers a more complete, ready-to-use pipeline.
 
-# Future Improvements
+## Future Improvements
 
 - Build a downstream CDC merge pipeline using dbt or Apache Spark  
 - Convert raw CDC data into Iceberg / Hudi tables  
 - Implement data validation between source and S3
 
 ---
-# References
+## References
 
 - AWS Terraform script sample for deploying DMS
   https://github.com/aws-samples/aws-dms-terraform
