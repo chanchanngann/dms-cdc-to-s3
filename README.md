@@ -107,7 +107,7 @@ s3://<dms_output_bucket>/public/test_dms123/
 
 ## Test CDC flow
 
-- To test CDC flow, we perform DML queries in source DB (insert/update/delete). The DMS task continuously reads changes from the source database transaction logs (e.g., WAL in PostgreSQL) and replicates them to S3. We can inspect the data in S3 accordingly.
+- To test CDC flow, we perform DML queries in source DB (insert/update/delete). The DMS task continuously reads changes from the source database transaction logs (e.g., WAL in PostgreSQL) and replicates them to S3. We can inspect the data in S3 once replication is done.
 	- Example DML query: [sql/1_cdc_test.sql](sql/1_cdc_test.sql) 
 	- Check the result data in S3.
 ![s3_data](images/07_s3_data.png)
